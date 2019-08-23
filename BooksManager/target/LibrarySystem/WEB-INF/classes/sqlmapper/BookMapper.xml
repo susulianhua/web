@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.xquant.dao.BookMapper">
+    <!--  查询所有书籍  -->
+    <select id="getAllBooks" resultType="org.xquant.pojo.Book">
+        select * from tb_books
+    </select>
+    <!--  根据书籍id查询对应书籍  -->
+    <select id="getBookByName" resultType="org.xquant.pojo.Book">
+        select * from tb_books where book_name=#{book_name}
+    </select>
+    <!--  增加书籍  -->
+    <insert id="addBook" parameterType="org.xquant.pojo.Book">
+        insert into tb_Books(book_id, state, book_name, description, author, price, publish_time)
+        values (#{book_id},#{state},#{book_name},#{description},#{author},#{price},#{publish_time})
+    </insert>
+    <!--  删除书籍  -->
+    <delete id="deleteBook" parameterType="Integer">
+        delete from tb_Books where book_id=#{book_id}
+    </delete>
+    <!--  更新  -->
+    <update id="updateBook" parameterType="org.xquant.pojo.Book">
+        update tb_Books set book_name=#{book_name},description=#{description},author=#{author},
+                           price=#{price},publishtim=#{publishtime}
+       where book_id=#{book_id}
+    </update>
+
+</mapper>
+

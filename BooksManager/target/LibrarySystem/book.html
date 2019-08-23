@@ -1,0 +1,139 @@
+<!Doctype html>
+<html>
+<head>
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <link href="css/table.css" type="text/css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <form onsubmit="return false" id="bookinf" onclick="addBook">
+        <input type="text" name="bookId" placeholder="书本id">
+        <input type="text" name="bookName" placeholder="书名">
+        <input type="text" name="author" placeholder="作者">
+        <input type="text" name="description" placeholder="描述">
+        <input type="text" name="price" placeholder="价格">
+        <input type="date" name="publishtime" placeholder="出版日期">
+        <input type="text" name="state" placeholder="当前状态">
+        <button id="add" onclick="addBook()">添加</button>
+    </form>
+</div>
+<div>
+    <form onclick="return false" id="deletebook" onclick="deleteBook()">
+        <input type="text" name="bookid" placeholder="书本id">
+        <button id="delete" onclick="deleteBook()">删除</button>
+    </form>
+</div>
+<input type="button" value="查询所有" id="getBooks" onclick="getAllBooks()" />
+<div>
+<form onsubmit="return false" id="books" method="post">
+    <input tpye="text" name="bookname" placeholder="书名">
+    <button id="select2" onclick="getBookByName()">查询</button>
+</form>
+</div>
+<table id="customers">
+    <thead>
+    <th>书本id</th>
+    <th>书名</th>
+    <th>作者</th>
+    <th>描述</th>
+    <th>价格</th>
+    <th>出版日期</th>
+    <th>当前状态</th>
+    </thead>
+    <tbody id="test"></tbody>
+</table>
+</body>
+</html>
+<script>
+    function addBook() {
+        $.ajax({
+            url:'http://localhost:8080/BooksManager//book/add',
+            type:'post',
+            data:$('#bookinf').serialize(),
+            error:function (data) {
+                alert('添加失败1');
+            },
+            success:function (data) {
+                if(data == 1) alert("添加成功");
+                else alert("添加失败2")
+            }
+        })
+
+    }
+</script>
+<script>
+    function deleteBook() {
+        $.ajax({
+            url:'http://localhost:8080/BooksManager//book/delete',
+            type:'post',
+            data:$('#deletebook').serialize(),
+            error:function (data) {
+                alert('删除失败');
+            },
+            success:function (data) {
+                if(data == 1) alert("删除成功");
+                else alert("删除失败2")
+            }
+        })
+
+    }
+</script>
+<script>
+function getBookByName() {
+    $.ajax({
+        url:'http://localhost:8080/BooksManager//book/select',
+        type:'post',
+        data:$('#books').serialize(),
+        datatype:"json",
+        error:function(data){
+            alert("查询失败");
+        },
+        success:function (data) {
+            var str1="";
+            $('#test').html("");
+
+            for(var i = 0; i < data.length; i++){
+                str1 = "<tr>" +
+                        "<td>" + data[i].book_id + "</td>" +
+                        "<td>" + data[i].book_name + "</td>" +
+                        "<td>" + data[i].author + "</td>" +
+                        "<td>" + data[i].description + "</td>" +
+                        "<td>" + data[i].price + "</td>" +
+                        "<td>" + data[i].publish_time +"</td>" +
+                        "<td>" + data[i].state + "</td>" + "</tr>"
+                $("#test").append(str1);
+            }
+        }
+    })
+
+}
+</script>
+<script>
+    function getAllBooks() {
+        $.ajax({
+            url:'http://localhost:8080/BooksManager//book/getAll',
+            type:'post',
+            error:function(data){
+                alert("查询失败");
+            },
+            success:function (data) {
+                var str1="";
+                $('#test').html("");
+                for(var i = 0; i < data.length; i++){
+                    str1 = "<tr>" +
+                        "<td>" + data[i].book_id + "</td>" +
+                        "<td>" + data[i].book_name + "</td>" +
+                        "<td>" + data[i].author + "</td>" +
+                        "<td>" + data[i].description + "</td>" +
+                        "<td>" + data[i].price + "</td>" +
+                        "<td>" + data[i].publish_time +"</td>" +
+                        "<td>" + data[i].state + "</td>" + "</tr>";
+                    $("#test").append(str1);
+                }
+            }
+        })
+
+    }
+</script>

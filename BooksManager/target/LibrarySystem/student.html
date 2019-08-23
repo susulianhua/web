@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <link href="css/table.css" type="text/css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>学生信息</title>
+</head>
+<body>
+<div>
+    <form onsubmit="return false" id="studentinf" onclick="addStudent">
+        <input type="text" name="sno" placeholder="学号">
+        <input type="text" name="sname" placeholder="姓名">
+        <input type="text" name="ssex" placeholder="性别">
+        <input type="text" name="sage" placeholder="年龄">
+        <input type="text" name="stel" placeholder="电话">
+        <input type="text" name="spwd" placeholder="密码">
+        <button id="addstudent" onclick="addStudent()">添加</button>
+    </form>
+</div>
+<div>
+    <input type="button" value="查询所有" id="getStudents" onclick="getAllStudents()" >
+    <form onsubmit="return false" id="students" method="post">
+        <input tpye="text" name="studentNum" placeholder="学号">
+        <button id="select2" onclick="getStudentById()">查询</button>
+    </form>
+</div>
+<table id="customers">
+    <thead>
+    <th>学号</th>
+    <th>姓名</th>
+    <th>性别</th>
+    <th>密码</th>
+    <th>年龄</th>
+    <th>电话</th>
+    </thead>
+    <tbody id="test"></tbody>
+</table>
+</body>
+<script>
+    function addStudent() {
+        $.ajax({
+            url:'http://localhost:8080/BooksManager//student/add',
+            type:'post',
+            data:$('#studentinf').serialize(),
+            error:function (data) {
+                alert('添加失败1');
+            },
+            success:function (data) {
+                if(data == 1) alert("添加成功");
+                else alert("添加失败2")
+            }
+        })
+
+    }
+</script>
+<script>
+    function getAllStudents() {
+        $.ajax({
+            url : 'http://localhost:8080/BooksManager//student/getstudent',
+            type:'post',
+            dataType: "json",
+            error:function(data){
+                alert("failed");
+            },
+            success:function(data) {
+                var jsonObj = JSON.parse(JSON.stringify(data))
+                var str="";
+                $('#test').html("");
+                for(var i = 0; i <jsonObj.length; i++){
+                    str1 = "<tr>" +
+                        "<td>" + jsonObj[i].sno + "</td>" +
+                        "<td>" + jsonObj[i].sname + "</td>" +
+                        "<td>" + jsonObj[i].ssex + "</td>" +
+                        "<td>" + jsonObj[i].spwd + "</td>" +
+                        "<td>" + jsonObj[i].sage + "</td>" +
+                        "<td>" + jsonObj[i].stel +"</td>" ;
+                    $("#test").append(str1);
+                }
+            }
+        })
+    }
+</script>
+<script>
+    function getStudentById() {
+        $.ajax({
+            url:'http://localhost:8080/BooksManager//student/select',
+            type:'post',
+            datatype:'json',
+            data:$('#students').serialize(),
+            error:function(data){
+                alert("查询失败");
+            },
+            success:function (data) {
+                var str1 = "";
+                $('#test').html("");
+                str1 = "<tr>" +
+                    "<td>" + data.sno + "</td>" +
+                    "<td>" + data.sname + "</td>" +
+                    "<td>" + data.ssex + "</td>" +
+                    "<td>" + data.spwd + "</td>" +
+                    "<td>" + data.sage + "</td>" +
+                    "<td>" + data.stel + "</td>";
+                if(data.sno == null) str1 = "";
+                $("#test").append(str1);
+
+            }
+        })
+
+    }
+</script>
